@@ -1,0 +1,138 @@
+ 
+######### MLOPS: Kubeflow Pipeline for ML Model #############
+
+
+# Install docker (already installed) - check the version
+	docker --version
+
+
+
+# Install & Start minikube cluster
+
+	curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
+	sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+
+	minikube status 
+	minikube start --driver=docker
+	kubectl get nodes
+
+	minikube addons list
+	minikube addons enable dashboard
+
+
+
+
+# Open the minikube dashboard on the browser - run the command in a dedicated new terminal 
+
+	minikube dashboard 
+
+
+	
+
+# Install kubectl with snap
+
+	snap install kubectl --classic
+	kubectl version --client
+	kubectl cluster-info
+
+
+
+
+# Install Python & pip (already installed) - check the version
+
+	(sudo) apt install python3 python3-pip -y
+	(sudo) ln -s /usr/bin/python3 /usr/bin/python
+
+	python3 --version
+	python --version
+	python -m pip --version
+	pip3 --version
+
+
+
+# Install the required Python package. You may have to create a virtual environment first.
+	pip install kfp
+
+	pip3 install kfp
+	pip3 show kfp
+
+	kfp --version	
+
+
+
+# Create python venv
+	
+	python3 -m venv path/to/venv
+	path/to/venv/bin/python --version
+
+	sudo apt install python3.12-venv -y
+
+	python3 -m venv path/to/venv
+
+	path/to/venv/bin/python --version
+	path/to/venv/bin/pip --version
+
+	path/to/venv/bin/pip install kfp
+
+	
+
+
+# Install Kubeflow ==> Kubeflow should be ready in about 10 - 15 minutes
+	Go to Google -> Search "kubeflow local deployment" -> Scroll down to "Deploying Kubeflow Pipelines
+
+
+	export PIPELINE_VERSION=2.3.0
+	kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION"
+	kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io
+	kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic?ref=$PIPELINE_VERSION"
+
+	
+	
+# Open the Kubeflow UI by port-forwarding it to port 8080 => Run in a dedicated terminal
+
+	kubectl port-forward -n kubeflow svc/ml-pipeline-ui 8080:80
+
+
+
+# Open Kubeflow UI on the browser
+	localhost:8080
+	
+	PublicIP:8080
+
+
+
+
+# Create the pipeline script called iris_pipeline.py. 
+
+	We will use the base image: python:3.9 
+
+
+
+
+# Compile the pipeline:
+
+	python iris_pipeline.py
+
+	
+or with Python virtual environment:
+
+	path/to/venv/bin/python iris_pipeline_copy.py
+
+
+
+# Deploy the pipeline
+
+	kfp pipeline create --help
+
+
+	kfp pipeline create -p IrisProject iris_pipeline_copy.yaml
+
+
+
+
+# Create a run in Kubeflow UI and monitor the pipeline run.
+
+
+
+
+
