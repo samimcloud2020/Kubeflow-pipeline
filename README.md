@@ -38,6 +38,37 @@ sudo usermod -aG docker $USER
 newgrp docker
 *****************************************************************************************************
 kubectl get nodes
-*****************************************************************************************************
+***************************************kubeflow**************************************************************
+Resources: Ensure your EC2 instance has at least 4 CPUs, 16GB RAM, and 50GB disk
+(e.g., t3.xlarge or larger). Check with:
+**************************************************************************************************************
+lscpu
+free -m
+df -h
+ Install Kustomize (if not already)
+
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+sudo mv kustomize /usr/local/bin/
+
+git clone https://github.com/kubeflow/manifests.git
+cd manifests
+git checkout v1.7-branch
+
+
+while ! kustomize build example | kubectl apply -f -; do echo "Retrying..."; sleep 10; done
+
+
+kubectl get pods -n kubeflow
+
+Port-Forward Kubeflow Central Dashboard
+
+kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80 --address 0.0.0.0
+
+Now open your browser to:
+
+http://Ec2-publicip:8080/
+u:  user@example.com
+p: 12341234
+************************************************************************************************************
 
 
